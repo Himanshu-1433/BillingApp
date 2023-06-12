@@ -1,0 +1,145 @@
+<div class="container-fluid border border-dark h-100 p-0">
+    <h1 class="text-center my-4">Recipient Details And Product's Bill</h1>
+    <main>
+        <form class="m-4" [formGroup]="reciverBill" (ngSubmit)="showData()">
+            <div class="d-flex justify-content-around">
+                <section class="bodyPartOne">
+                    <section class="takerDetails">
+                        <div class="m-1">
+                            <label for="recipientName" class="form-label">Enter Recipient's Name</label>
+                            <input type="text" id="recipientName" class="form-control" formControlName="recipientName">
+                        </div>
+                        <div class="row d-flex align-items-center justify-content-around">
+                            <div class="col">
+                                <label for="recipientGSTNumber" class="form-label">Enter Recipient's GST Number</label>
+                                <input type="text" id="recipientGSTNumber" class="form-control"
+                                    formControlName="recipientGSTNumber">
+                            </div>
+                            <div class="col-3">
+                                <label for="invoiceNumber" class="form-label">Invoice Number</label>
+                                <input type="number" id="invoiceNumber" class="form-control"
+                                    formControlName="recipientInvoiceNum">
+                            </div>
+                            <div class="col">
+                                <label for="genrateDate" class="form-label">Date</label>
+                                <input type="date" id="genrateDate" formControlName="billDate" class="form-control">
+                            </div>
+                        </div>
+                    </section>
+                </section>
+                <section class="bodyPartTwo">
+                    <section class="takerDetails">
+                        <div class="m-1">
+                            <label for="recipientAdd" class="form-label">Enter Recipient's Address</label>
+                            <textarea class="form-control" id="recipientAdd" rows="3"
+                                formControlName="billAddress"></textarea>
+                        </div>
+                        <div class="row d-flex align-items-center justify-content-around">
+                            <div class="col">
+                                <label for="state" class="form-label">Enter Recipient's State</label>
+                                <input type="text" id="state" class="form-control" formControlName="state">
+                            </div>
+                            <div class="col">
+                                <label for="stateCode" class="form-label">State Code</label>
+                                <input type="number" id="stateCode" class="form-control" formControlName="stateCode">
+                            </div>
+                        </div>
+                    </section>
+                </section>
+            </div>
+            <section style="border: 1px solid black; border-radius: 10px; padding: 10px;">
+                <div class="row mx-3">
+                    <div class="col-3 pro-head">
+                        <p>Product Details</p>
+                    </div>
+                    <div class="col-1 pro-head">
+                        <p>HSN Code</p>
+                    </div>
+                    <div class="col-1 pro-head">
+                        <p>QTY</p>
+                    </div>
+                    <div class="col-2 pro-head">
+                        <p>Price</p>
+                    </div>
+                    <div class="col-2 pro-head">
+                        <p>Total Amount</p>
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-outline-success" (click)="addproductItem()"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-plus" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg> Add</button>
+                    </div>
+                </div>
+                <div *ngFor="let item of productItems.controls; let i = index">
+                    <div formArrayName="productItems">
+                        <div class="row p-0 my-1 mx-3" [formGroupName]="i">
+                            <hr>
+                            <div class="col-3 pro-head-control my-2">
+                                <textarea class="form-control" formControlName="productDetails" class="form-control"
+                                    rows="3"></textarea>
+                            </div>
+                            <div class="col-1 pro-head-control my-2">
+                                <input type="text" formControlName="HSNCode" class="form-control">
+                            </div>
+                            <div class="col-1 pro-head-control my-2">
+                                <input type="number" formControlName="QTY" class="form-control" min="1" #qtyItem>
+                            </div>
+                            <div class="col-2 pro-head-control my-2">
+                                <input type="number" formControlName="price" class="form-control" (keyup)="setItemAmount(i , qtyItem.value , priceItem.value)" min="1" #priceItem>
+                            </div>
+                            <div class="col-2 pro-head-control my-2">
+                                <input type="number" formControlName="amount" class="form-control" min=1 [value]="Number(qtyItem.value) * Number(priceItem.value)">
+                            </div>
+                            <div class="col-1 my-2">
+                                <button class="btn btn-outline-danger" (click)="deleteItems(i)"><svg
+                                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                    </svg></button>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+                <div class="finalTotalBillSection my-4">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-5 rupeesInWord b-group">
+                            <label for="rupeesInWord" class="form-label">Rupees In Word</label>
+                            <input  name="rupeesInWord" class="form-control" formControlName="rupeesInWord" [value]="rupeesToWordConveter(totalBillAmount.value)">
+                        </div>
+                        <div class="col-5 totalFinalRupees b-group">
+                            <div class="input-group my-2">
+                                <span class="input-group-text" id="CGST">CGST</span>
+                                <input type="number" id="cGstTax" class="form-control m-0" (change)="calculateGST()" formControlName="cGstTax">
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <div class="input-group my-2">
+                                <span class="input-group-text" id="SGST">SGST</span>
+                                <input type="number" id="sGstTax" class="form-control m-0" (change)="calculateGST()" formControlName="sGstTax">
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <div class="input-group my-2">
+                                <span class="input-group-text" id="IGST">IGST</span>
+                                <input type="number" id="iGstTax" class="form-control m-0" (change)="calculateGST()" formControlName="iGstTax">
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <div class="input-group my-2">
+                                <span class="input-group-text" id="total">Total</span>
+                                <input type="number" id="totalBill" class="form-control m-0"
+                                    formControlName="totalBillAmount" #totalBillAmount>
+                                <span class="input-group-text">/-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="btn w-100 btn-outline-primary" routerLink="/Bill-Invoice-pdf" [state]="reciverBill.value">Submit</button>
+                </div>
+            </section>
+        </form>
+    </main>
+</div>

@@ -1,0 +1,47 @@
+.bodyPartOne {
+    border-radius: 20px;
+    padding: 1%;
+    margin: 20px;
+    border: 1px solid black;
+    position: relative;
+    width: calc(100vw - 40vw);
+}
+
+.form-label {
+    font-weight: 600;
+}
+
+.pro-head {
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 0px 10px;
+    text-align: center;
+}
+
+.pro-head-control {
+    border-radius: 10px;
+    margin: 0px 10px;
+    text-align: center;
+}
+
+.bodyPartTwo {
+    border-radius: 20px;
+    padding: 1%;
+    margin: 20px;
+    border: 1px solid black;
+    position: relative;
+    width: calc(100vw - 60vw);
+}
+
+.finalTotalBillSection {
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 0px 10px;
+}
+
+.b-group {
+    margin: 10px;
+    border-radius: 20px;
+    border: 1px solid black;
+    padding: 20px;
+}
