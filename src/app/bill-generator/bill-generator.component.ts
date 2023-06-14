@@ -15,7 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./bill-generator.component.css'],
 })
 export class BillGeneratorComponent implements OnInit {
-  routingData : any;
+  routingData: any;
   ownerBillDetails!: Object;
   reciverBill!: FormGroup;
   formDetail: any;
@@ -32,7 +32,7 @@ export class BillGeneratorComponent implements OnInit {
   ngOnInit(): void {
     this.ownerBillDetails = history.state;
     this.reciverBill = this.fb.group({
-      ownerBill : history.state,
+      ownerBill: history.state,
       recipientName: this.fb.control(''),
       recipientGSTNumber: this.fb.control(''),
       recipientInvoiceNum: this.fb.control(''),
@@ -44,16 +44,22 @@ export class BillGeneratorComponent implements OnInit {
         this.fb.group({
           productDetails: this.fb.control(''),
           HSNCode: this.fb.control(''),
-          QTY: this.fb.control(''),
-          price: this.fb.control(''),
-          amount: this.fb.control(''),
+          QTY: this.fb.control(0.00),
+          price: this.fb.control(0.00),
+          amount: this.fb.control(0.00),
         }),
       ]),
+      totalWithoutTax: this.fb.control(0.00),
       rupeesInWord: this.fb.control(''),
-      cGstTax: this.fb.control(0),
-      sGstTax: this.fb.control(0),
-      iGstTax: this.fb.control(0),
-      totalBillAmount: this.fb.control('0'),
+      cGstTax: this.fb.control(0.00),
+      sGstTax: this.fb.control(0.00),
+      cGstAmount: this.fb.control(''),
+      sGstAmount: this.fb.control(''),
+      totalBillAmount: this.fb.control(0.00),
+      termsCondition: this.fb.array([this.fb.control('')]),
+      bankName : this.fb.control(''),
+      accountNo : this.fb.control(''),
+      IFSCcode : this.fb.control(''),
     });
     this.formDetail = this.reciverBill.value;
     const total = 0;
@@ -67,9 +73,9 @@ export class BillGeneratorComponent implements OnInit {
     let items = this.fb.group({
       productDetails: [''],
       HSNCode: [''],
-      QTY: this.fb.control({ value: '' }),
-      price: this.fb.control({ value: '' }),
-      amount: this.fb.control(''),
+      QTY: this.fb.control(0.00),
+      price: this.fb.control(0.00),
+      amount: this.fb.control(0.00),
     });
     this.productItems.push(items);
   }
@@ -78,6 +84,18 @@ export class BillGeneratorComponent implements OnInit {
     this.productItems.removeAt(itemsNumber);
     this.calculateTotalItemsAmount();
     this.calculateGST();
+  }
+
+  get termsCondition() : FormArray {
+    return this.reciverBill.get("termsCondition") as FormArray;
+  }
+
+  addTermsAndcondition(){
+    this.termsCondition.push(this.fb.control(''));
+  }
+
+  deleteTermsAndcondition(numIndex : number) {
+    this.termsCondition.removeAt(numIndex);
   }
 
   Number(type: any) {
@@ -99,15 +117,22 @@ export class BillGeneratorComponent implements OnInit {
             this.wordConveter(passingNumber) +
             'Only'
         );
-        return this.wordConveter(number[0]) + ' point' + this.wordConveter(passingNumber) + 'Only';
+        return (
+          this.wordConveter(number[0]) +
+          ' point' +
+          this.wordConveter(passingNumber) +
+          'Only'
+        );
       } else {
         this.reciverBill.controls['rupeesInWord'].setValue(
-          this.wordConveter(fNum) +
-            ' point' +
-            this.wordConveter(lNum) +
-            'Only'
+          this.wordConveter(fNum) + ' point' + this.wordConveter(lNum) + 'Only'
         );
-        return this.wordConveter(number[0]) + ' point' + this.wordConveter(lNum) + 'Only'
+        return (
+          this.wordConveter(number[0]) +
+          ' point' +
+          this.wordConveter(lNum) +
+          'Only'
+        );
       }
     } else {
       this.reciverBill.controls['rupeesInWord'].setValue(
@@ -254,10 +279,12 @@ export class BillGeneratorComponent implements OnInit {
         return preVal + curVal;
       });
       // console.log('the multiple total Amount' + this.totalAmount);
+      this.reciverBill.controls['totalWithoutTax'].setValue(this.totalAmount);
       this.reciverBill.controls['totalBillAmount'].setValue(this.totalAmount);
     } else {
       this.totalAmount = this.amount[0];
       // console.log('the single total Amount' + this.totalAmount);
+      this.reciverBill.controls['totalWithoutTax'].setValue(this.totalAmount);
       this.reciverBill.controls['totalBillAmount'].setValue(this.totalAmount);
     }
     this.calculateGST();
@@ -266,10 +293,15 @@ export class BillGeneratorComponent implements OnInit {
   calculateGST() {
     let num =
       Number(this.reciverBill.get('cGstTax')?.value) +
-      Number(this.reciverBill.get('sGstTax')?.value) +
-      Number(this.reciverBill.get('iGstTax')?.value);
+      Number(this.reciverBill.get('sGstTax')?.value);
     let gst = 0;
     gst = (this.totalAmount * num) / 100 + this.totalAmount;
+    this.reciverBill.controls['cGstAmount'].setValue(
+      (this.totalAmount * Number(this.reciverBill.get('cGstTax')?.value)) / 100
+    );
+    this.reciverBill.controls['sGstAmount'].setValue(
+      (this.totalAmount * Number(this.reciverBill.get('sGstTax')?.value)) / 100
+    );
     // console.log('gst :: ', gst);
     this.reciverBill.controls['totalBillAmount'].setValue(gst);
   }

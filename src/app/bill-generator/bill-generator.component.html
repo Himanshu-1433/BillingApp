@@ -17,7 +17,7 @@
                             </div>
                             <div class="col-3">
                                 <label for="invoiceNumber" class="form-label">Invoice Number</label>
-                                <input type="number" id="invoiceNumber" class="form-control"
+                                <input type="text" id="invoiceNumber" class="form-control"
                                     formControlName="recipientInvoiceNum">
                             </div>
                             <div class="col">
@@ -88,10 +88,12 @@
                                 <input type="number" formControlName="QTY" class="form-control" min="1" #qtyItem>
                             </div>
                             <div class="col-2 pro-head-control my-2">
-                                <input type="number" formControlName="price" class="form-control" (keyup)="setItemAmount(i , qtyItem.value , priceItem.value)" min="1" #priceItem>
+                                <input type="number" formControlName="price" class="form-control"
+                                    (keyup)="setItemAmount(i , qtyItem.value , priceItem.value)" min="1" #priceItem>
                             </div>
                             <div class="col-2 pro-head-control my-2">
-                                <input type="number" formControlName="amount" class="form-control" min=1 [value]="Number(qtyItem.value) * Number(priceItem.value)">
+                                <input type="number" formControlName="amount" class="form-control" min=1
+                                    [value]="Number(qtyItem.value) * Number(priceItem.value)">
                             </div>
                             <div class="col-1 my-2">
                                 <button class="btn btn-outline-danger" (click)="deleteItems(i)"><svg
@@ -106,29 +108,48 @@
                     </div>
                 </div>
                 <div class="finalTotalBillSection my-4">
-                    <div class="row d-flex justify-content-center">
+                    <div class="row d-flex justify-content-center align-items-center">
                         <div class="col-5 rupeesInWord b-group">
                             <label for="rupeesInWord" class="form-label">Rupees In Word</label>
-                            <input  name="rupeesInWord" class="form-control" formControlName="rupeesInWord" [value]="rupeesToWordConveter(totalBillAmount.value)">
+                            <input name="rupeesInWord" class="form-control" formControlName="rupeesInWord"
+                            [value]="rupeesToWordConveter(totalBillAmount.value)">
+                            <label for="rupeesInWord" class="form-label">Bank Details</label>
+                            <div class="input-group my-2">
+                                <span class="input-group-text" id="BranchName">Branch Name</span>
+                                <input type="text" id="BranchName" class="form-control m-0"
+                                formControlName="bankName">
+                            </div>
+                            <div class="input-group my-2">
+                                <span class="input-group-text" id="accountNo">Account No.</span>
+                                <input type="number" id="accountNo" class="form-control m-0"
+                                    formControlName="accountNo">
+                            </div>
+                            <div class="input-group my-2">
+                                <span class="input-group-text" id="IFSCcode">IFSC Code</span>
+                                <input type="number" id="IFSCcode" class="form-control m-0"
+                                    formControlName="IFSCcode">
+                            </div>
                         </div>
                         <div class="col-5 totalFinalRupees b-group">
                             <div class="input-group my-2">
+                                <span class="input-group-text" id="totalWithoutTax">Total Without Tax</span>
+                                <input type="number" id="totalWithoutTaxTax" class="form-control m-0"
+                                    formControlName="totalWithoutTax">
+                            </div>
+                            <div class="input-group my-2">
                                 <span class="input-group-text" id="CGST">CGST</span>
-                                <input type="number" id="cGstTax" class="form-control m-0" (change)="calculateGST()" formControlName="cGstTax">
-                                <span class="input-group-text">%</span>
+                                <input type="number" id="cGstTax" class="form-control m-0" (change)="calculateGST()"
+                                    formControlName="cGstTax">
+                                <input type="number" id="cGstTax" class="form-control m-0" formControlName="cGstAmount">
                             </div>
                             <div class="input-group my-2">
                                 <span class="input-group-text" id="SGST">SGST</span>
-                                <input type="number" id="sGstTax" class="form-control m-0" (change)="calculateGST()" formControlName="sGstTax">
-                                <span class="input-group-text">%</span>
+                                <input type="number" id="sGstTax" class="form-control m-0" (change)="calculateGST()"
+                                    formControlName="sGstTax">
+                                <input type="number" id="sGstTax" class="form-control m-0" formControlName="sGstAmount">
                             </div>
                             <div class="input-group my-2">
-                                <span class="input-group-text" id="IGST">IGST</span>
-                                <input type="number" id="iGstTax" class="form-control m-0" (change)="calculateGST()" formControlName="iGstTax">
-                                <span class="input-group-text">%</span>
-                            </div>
-                            <div class="input-group my-2">
-                                <span class="input-group-text" id="total">Total</span>
+                                <span class="input-group-text" id="total">Grand Total</span>
                                 <input type="number" id="totalBill" class="form-control m-0"
                                     formControlName="totalBillAmount" #totalBillAmount>
                                 <span class="input-group-text">/-</span>
@@ -136,8 +157,30 @@
                         </div>
                     </div>
                 </div>
+                <div class="termsCondition my-4">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-10 b-group" formArrayName="termsCondition">
+                            <label for="termsCondition" class="form-label">Terms & Condition</label>
+                            <button class="btn btn-outline-warning m-2" (click)="addTermsAndcondition()">Add
+                                Terms</button>
+                            <div *ngFor="let item of termsCondition.controls; let i = index">
+                                <div class="d-flex align-items-cetner my-1">
+                                    <input name="termsCondition" class="form-control" [formControlName]="i">
+                                    <button class="btn btn-outline-danger mx-1"
+                                        (click)="deleteTermsAndcondition(i)"><svg xmlns="http://www.w3.org/2000/svg"
+                                            width="16" height="16" fill="currentColor" class="bi bi-trash3-fill"
+                                            viewBox="0 0 16 16">
+                                            <path
+                                                d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z" />
+                                        </svg></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div>
-                    <button type="submit" class="btn w-100 btn-outline-primary" routerLink="/Bill-Invoice-pdf" [state]="reciverBill.value">Submit</button>
+                    <button type="submit" class="btn w-100 btn-outline-primary" routerLink="/Bill-Invoice-pdf"
+                        [state]="reciverBill.value">Submit</button>
                 </div>
             </section>
         </form>
