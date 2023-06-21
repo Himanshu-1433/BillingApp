@@ -89,7 +89,7 @@
                             </div>
                             <div class="col-2 pro-head-control my-2">
                                 <input type="number" formControlName="price" class="form-control"
-                                    (keyup)="setItemAmount(i , qtyItem.value , priceItem.value)" min="1" #priceItem>
+                                    (keyup)="setItemAmount(i , qtyItem.value , priceItem.value)" (change)="setItemAmount(i , qtyItem.value , priceItem.value)" min="1" #priceItem>
                             </div>
                             <div class="col-2 pro-head-control my-2">
                                 <input type="number" formControlName="amount" class="form-control" min=1
